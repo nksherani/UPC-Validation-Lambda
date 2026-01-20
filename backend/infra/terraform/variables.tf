@@ -10,16 +10,10 @@ variable "lambda_name" {
   default     = "upc-backend"
 }
 
-variable "ecr_repo_name" {
+variable "image_uri" {
   type        = string
-  description = "ECR repository name for the backend container."
-  default     = "upc-backend"
-}
-
-variable "image_tag" {
-  type        = string
-  description = "Image tag to deploy from the ECR repository."
-  default     = "latest"
+  description = "Full ECR image URI (including tag) for the Lambda image."
+  default = "539148045575.dkr.ecr.us-east-1.amazonaws.com/upc-backend:latest"
 }
 
 variable "lambda_timeout" {

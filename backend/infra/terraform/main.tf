@@ -1,41 +1,3 @@
-locals {
-  image_uri = "${aws_ecr_repository.backend.repository_url}:${var.image_tag}"
-}
-
-resource "aws_ecr_repository" "backend" {
-  name                 = var.ecr_repo_name
-  image_tag_mutability = "MUTABLE"
-
-  image_scanning_configuration {
-    scan_on_push = true
-  }
-}
-
-resource "aws_ecr_repository_policy" "lambda_pull" {
-  repository = aws_ecr_repository.backend.name
-  policy     = jsonencode({
-    Version = "2008-10-17"
-    Statement = [
-      {
-        Sid = "LambdaEcrImagePull"
-        Effect = "Allow"
-        Principal = {
-          Service = "lambda.amazonaws.com"
-        }
-        Action = [
-          "ecr:BatchGetImage",
-          "ecr:GetDownloadUrlForLayer"
-        ]
-        Condition = {
-          StringLike = {
-            "aws:sourceArn" = "arn:aws:lambda:${var.aws_region}:*:function:${var.lambda_name}"
-          }
-        }
-      }
-    ]
-  })
-}
-
 resource "aws_iam_role" "lambda_exec" {
   name = "${var.lambda_name}-exec"
 
@@ -63,7 +25,7 @@ resource "aws_lambda_function" "backend" {
   role          = aws_iam_role.lambda_exec.arn
   package_type  = "Image"
   architectures = ["arm64"]
-  image_uri     = local.image_uri
+  image_uri     = var.image_uri
   timeout       = var.lambda_timeout
   memory_size   = var.lambda_memory
   image_config {

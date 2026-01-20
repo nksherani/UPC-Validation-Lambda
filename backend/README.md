@@ -35,7 +35,8 @@ aws ecr get-login-password --region us-east-1 \
   | docker login --username AWS --password-stdin 539148045575.dkr.ecr.us-east-1.amazonaws.com
 
 # create repo if needed, then tag + push
-# aws ecr create-repository --repository-name upc-backend --region us-east-1
+aws ecr create-repository --repository-name upc-backend --region us-east-1
+
 docker tag upc-backend:latest 539148045575.dkr.ecr.us-east-1.amazonaws.com/upc-backend:latest
 docker push 539148045575.dkr.ecr.us-east-1.amazonaws.com/upc-backend:latest
 
